@@ -13,6 +13,12 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 8
+      - name: Publish Javadocs
+        uses: eskatos/gradle-command-action@v1.2.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          arguments: gitPublishPush -Dorg.ajoberstar.grgit.auth.username=${GITHUB_TOKEN}
       - name: Publish plugin
         uses: eskatos/gradle-command-action@v1.2.0
         env:

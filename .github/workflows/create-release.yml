@@ -33,11 +33,9 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
           # Optional but recommended, defaults to "Apply automatic changes"
-          commit_message: Update sample version ${{ env.RELEASE_VERSION }}
+          commit_message: Update sample version to ${{ env.RELEASE_VERSION }}
           branch: master
           file_pattern: src/docs/samples
-          commit_user_name: bot-gradle
-          commit_user_email: bot-gradle@gradle.com
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Publish plugin

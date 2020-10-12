@@ -13,6 +13,22 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 8
+      - name: Modify samples version
+        run: |
+            RELEASE_VERSION=$(./gradlew properties -q | grep 'version:' | awk '{print $2}')
+            echo 'RELEASE_VERSION=${RELEASE_VERSION}' >> ${GITHUB_ENV}
+            PLAY_PLUGIN_LINE="id 'org\.gradle\.playframework' version"
+            find . -name 'build.gradle*' -type f -exec sed -i "s/${PLAY_PLUGIN_LINE} '\(.*\)'/${PLAY_PLUGIN_LINE} '0.10'/g" {} +
+            git status
+      - name: Commit changes
+        uses: EndBug/add-and-commit@v5
+        with:
+          author_name: bot-gradle
+          author_email: bot-gradle@gradle.com
+          message: "Update sample version ${RELEASE_VERSION}"
+          add: "src/docs/sample"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Publish plugin
         uses: eskatos/gradle-command-action@v1.2.0
         env:

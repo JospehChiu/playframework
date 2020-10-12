@@ -17,7 +17,7 @@ jobs:
         run: |
             RELEASE_VERSION=$(./gradlew properties -q | grep 'version:' | awk '{print $2}')
             [[ ! -z "${RELEASE_VERSION}" ]] || (echo "Get empty release version, RELEASE_VERSION='${RELEASE_VERSION}'" && exit 1)
-            echo 'RELEASE_VERSION=${RELEASE_VERSION}' >> ${GITHUB_ENV}
+            echo "RELEASE_VERSION=${RELEASE_VERSION}" >> ${GITHUB_ENV}
       - name: Checkout master
         uses: actions/checkout@v2
         with:
@@ -30,16 +30,16 @@ jobs:
         env:
           RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
       - name: Commit changes
-        uses: EndBug/add-and-commit@v5
+        uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          author_name: bot-gradle
-          author_email: bot-gradle@gradle.com
-          message: "Update sample version ${{ env.RELEASE_VERSION }}"
-          add: src/docs/samples
-          signoff: true
+          # Optional but recommended, defaults to "Apply automatic changes"
+          commit_message: Update sample version ${{ env.RELEASE_VERSION }}
+          branch: master
+          file_pattern: src/docs/samples
+          commit_user_name: bot-gradle
+          commit_user_email: bot-gradle@gradle.com
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
       - name: Publish plugin
         uses: eskatos/gradle-command-action@v1.2.0
         env:
